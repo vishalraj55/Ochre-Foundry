@@ -36,7 +36,7 @@ export default function Footer() {
       </div>
 
       <div className="container-px border-t border-basalt-700 py-6 flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-titanium-500 font-mono">
-        <span>© {new Date().getFullYear()} OCHRE FOUNDRY — ELYSIUM OPERATIONS</span>
+        <span>© {new Date().getFullYear()} OCHRE FOUNDRY — VISHAL RAJBHAR ❤️</span>
         <span>SOL-COMPLIANT · IMSA CLASS III</span>
       </div>
     </footer>
