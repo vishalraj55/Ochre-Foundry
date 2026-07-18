@@ -61,22 +61,21 @@ const TimelineItem = ({ year, title, desc, index }) => {
       className={`grid md:grid-cols-2 gap-8 items-center ${index % 2 === 1 ? "md:text-right" : ""}`}
     >
       <div className={index % 2 === 1 ? "md:order-2" : ""}>
-          <div className="w-full aspect-video bg-black rounded-lg border border-basalt-700 overflow-hidden relative group">
-            {" "}
-            <video
-              className="w-full h-full object-cover"
-              autoPlay
-              muted
-              loop
-              playsInline
-            >
-              <source
-                src={`/videos/timeline-${index + 1}.mp4`}
-                type="video/mp4"
-              />
-            </video>
-            <div className="absolute inset-0 bg-gradient-to-r from-rust-500/0 via-rust-500/10 to-rust-500/0 group-hover:via-rust-500/20 transition-all" />
-          </div>
+        <div className="w-full aspect-video bg-black rounded-lg border border-basalt-700 overflow-hidden relative group">
+          <video
+            className="w-full h-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+          >
+            <source
+              src={`/videos/timeline-${index + 1}.mp4`}
+              type="video/mp4"
+            />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-r from-rust-500/0 via-rust-500/10 to-rust-500/0 group-hover:via-rust-500/20 transition-all" />
+        </div>
       </div>
       <div>
         <p className="eyebrow mb-3">{year}</p>
@@ -168,9 +167,12 @@ export default function Home() {
     <>
       {/* Hero Section */}
       <motion.section
-        style={{ opacity: heroOpacity, scale: heroScale }}
-        className="relative h-screen flex items-center justify-center overflow-hidden bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('src/assets/mars-image.png')" }}
+        style={{
+          opacity: heroOpacity,
+          scale: heroScale,
+          backgroundImage: "url('/images/mars-image.png')",
+        }}
+        className="relative h-screen flex items-center justify-center overflow-hidden bg-cover bg-center"
       >
         <GradientMesh />
 
