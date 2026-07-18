@@ -29,6 +29,7 @@ Ochre Foundry is a next-generation website showcasing advanced 3D-printed habita
 
 ## Project Structure
 
+```text
 src/
 ├── pages/
 │   └── Home.jsx              # Main landing page
@@ -42,6 +43,7 @@ src/
 │   └── globals.css           # Global CSS with custom utilities
 └── assets/
     └── mars-image.png        # Hero background image
+```
 
 ## Installation
 
