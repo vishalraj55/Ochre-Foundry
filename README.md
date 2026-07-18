@@ -31,17 +31,17 @@ Ochre Foundry is a next-generation website showcasing advanced 3D-printed habita
 
 src/
 ├── pages/
-│ └── Home.jsx              # Main landing page
+│   └── Home.jsx              # Main landing page
 ├── components/
-│ ├── Reveal.jsx            # Reveal animation wrapper
-│ ├── SectionHeading.jsx    # Section header component
-│ ├── FAQ.jsx               # FAQ accordion
-│ ├── CTASection.jsx        # Call-to-action section
-│ └── TestimonialCard.jsx
+│   ├── Reveal.jsx            # Reveal animation wrapper
+│   ├── SectionHeading.jsx    # Section header component
+│   ├── FAQ.jsx               # FAQ accordion
+│   ├── CTASection.jsx        # Call-to-action section
+│   └── TestimonialCard.jsx
 ├── styles/
-│ └── globals.css           # Global CSS with custom utilities
+│   └── globals.css           # Global CSS with custom utilities
 └── assets/
-└── mars-image.png # Hero background image
+    └── mars-image.png        # Hero background image
 
 ## Installation
 
