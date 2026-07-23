@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import Mars3DSection from "../components/Mars3DSection";
+import { ContinuousMarquee, ScrollMarquee } from "../components/Marquee";
 
 const Counter = ({ end, duration = 2 }) => {
   const [count, setCount] = useState(0);
@@ -10,7 +12,6 @@ const Counter = ({ end, duration = 2 }) => {
 
   useEffect(() => {
     if (!isInView) return;
-
     let current = 0;
     const increment = end / (duration * 60);
     const interval = setInterval(() => {
@@ -22,7 +23,6 @@ const Counter = ({ end, duration = 2 }) => {
         setCount(Math.floor(current));
       }
     }, 1000 / 60);
-
     return () => clearInterval(interval);
   }, [isInView, end, duration]);
 
@@ -42,24 +42,25 @@ const Counter_StatCard = ({ value, label, index }) => {
     target: ref,
     offset: ["start 80%", "end 20%"],
   });
-
-  const y = useTransform(scrollYProgress, [0, 1], [30, -30]);
+  const y = useTransform(scrollYProgress, [0, 1], [20, -20]);
 
   return (
     <motion.div
       ref={ref}
       style={{ y }}
-      className="relative p-12 overflow-hidden group"
+      className="relative p-5 md:p-8 overflow-hidden group"
     >
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: "linear-gradient(135deg, rgba(212,175,106,0.08), rgba(212,175,106,0))" }} />
       <div className="absolute inset-px opacity-0 group-hover:opacity-50 transition-opacity duration-500 border border-[#d4af6a]" />
-
       <div className="relative z-10">
-        <div className="text-xs uppercase tracking-widest mb-8" style={{ color: "#d4af6a" }}>
+        <div
+          className="text-[10px] md:text-xs uppercase tracking-widest mb-3 md:mb-5"
+          style={{ color: "#d4af6a" }}
+        >
           {label}
         </div>
         <motion.div
-          className="text-6xl md:text-7xl font-light tracking-tight"
+          className="text-3xl md:text-6xl font-light tracking-tight"
           style={{ color: "#d4af6a" }}
         >
           {value}
@@ -78,23 +79,41 @@ const FeatureCardMinimal = ({ title, desc, index, number }) => {
       ref={ref}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: index * 0.12 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.08 }}
       className="relative group cursor-pointer"
     >
-      <div className="relative p-10 overflow-hidden">
-        <div className={`absolute inset-0 transition-all duration-700 ${isHovered ? "opacity-100" : "opacity-0"}`} style={{ background: "linear-gradient(135deg, rgba(212,175,106,0.06), transparent)" }} />
-        <div className={`absolute inset-px border transition-all duration-700 ${isHovered ? "opacity-60" : "opacity-0"}`} style={{ borderColor: "#d4af6a" }} />
-
+      <div className="relative p-6 md:p-8 overflow-hidden">
+        <div
+          className={`absolute inset-0 transition-all duration-500 ${isHovered ? "opacity-100" : "opacity-0"}`}
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(212,175,106,0.06), transparent)",
+          }}
+        />
+        <div
+          className={`absolute inset-px border transition-all duration-500 ${isHovered ? "opacity-60" : "opacity-0"}`}
+          style={{ borderColor: "#d4af6a" }}
+        />
         <div className="relative z-10">
-          <div className="text-sm font-light uppercase tracking-widest mb-8" style={{ color: "#d4af6a" }}>
+          <div
+            className="text-xs font-light uppercase tracking-widest mb-4 md:mb-6"
+            style={{ color: "#d4af6a" }}
+          >
             {number}.
           </div>
-          <h3 className="text-2xl font-light mb-6" style={{ color: "#f5f5f5" }}>
+          <h3
+            className="text-lg md:text-2xl font-light mb-2 md:mb-4"
+            style={{ color: "#f5f5f5" }}
+          >
             {title}
           </h3>
-          <p className="text-sm leading-relaxed font-light" style={{ color: "#a8a8a8" }}>
+          <p
+            className="text-xs md:text-sm leading-relaxed font-light"
+            style={{ color: "#a8a8a8" }}
+          >
             {desc}
           </p>
         </div>
@@ -105,19 +124,19 @@ const FeatureCardMinimal = ({ title, desc, index, number }) => {
 
 const TimelineItemMinimal = ({ year, title, desc, index }) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+      initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
       animate={
         isInView
           ? { opacity: 1, x: 0 }
-          : { opacity: 0, x: index % 2 === 0 ? -50 : 50 }
+          : { opacity: 0, x: index % 2 === 0 ? -30 : 30 }
       }
-      transition={{ duration: 0.7, delay: index * 0.1 }}
-      className={`grid md:grid-cols-2 gap-16 items-center py-20 border-t border-opacity-20 ${index === 0 ? "border-t-0" : ""}`}
+      transition={{ duration: 0.6, delay: index * 0.08 }}
+      className={`grid md:grid-cols-2 gap-6 md:gap-12 items-center py-8 md:py-12 border-t border-opacity-20 ${index === 0 ? "border-t-0" : ""}`}
       style={{ borderColor: "#d4af6a" }}
     >
       <div className={index % 2 === 1 ? "md:order-2" : ""}>
@@ -129,20 +148,34 @@ const TimelineItemMinimal = ({ year, title, desc, index }) => {
             loop
             playsInline
           >
-            <source src={`/videos/timeline-${index + 1}.mp4`} type="video/mp4" />
+            <source
+              src={`/videos/timeline-${index + 1}.mp4`}
+              type="video/mp4"
+            />
           </video>
-          <div className="absolute inset-0 opacity-5 group-hover:opacity-10 transition-opacity duration-700" style={{ background: "#d4af6a" }} />
+          <div
+            className="absolute inset-0 opacity-5 group-hover:opacity-10 transition-opacity duration-700"
+            style={{ background: "#d4af6a" }}
+          />
         </div>
       </div>
-
       <div>
-        <div className="text-xs uppercase tracking-widest mb-6" style={{ color: "#d4af6a" }}>
+        <div
+          className="text-xs uppercase tracking-widest mb-3 md:mb-4"
+          style={{ color: "#d4af6a" }}
+        >
           {year}
         </div>
-        <h3 className="text-4xl font-light mb-6" style={{ color: "#f5f5f5" }}>
+        <h3
+          className="text-2xl md:text-4xl font-light mb-2 md:mb-4"
+          style={{ color: "#f5f5f5" }}
+        >
           {title}
         </h3>
-        <p className="text-sm leading-relaxed font-light" style={{ color: "#a8a8a8" }}>
+        <p
+          className="text-xs md:text-sm leading-relaxed font-light"
+          style={{ color: "#a8a8a8" }}
+        >
           {desc}
         </p>
       </div>
@@ -157,28 +190,51 @@ const TierCardMinimal = ({ name, desc, specs, index }) => {
     <motion.div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: index * 0.12 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.08 }}
       className="relative group"
     >
-      <div className="relative p-12 overflow-hidden">
-        <div className={`absolute inset-0 transition-all duration-700 ${isHovered ? "opacity-100" : "opacity-0"}`} style={{ background: "linear-gradient(135deg, rgba(212,175,106,0.08), transparent)" }} />
-        <div className={`absolute inset-px border transition-all duration-700 ${isHovered ? "opacity-60" : "opacity-0"}`} style={{ borderColor: "#d4af6a" }} />
-
+      <div className="relative p-6 md:p-10 overflow-hidden">
+        <div
+          className={`absolute inset-0 transition-all duration-500 ${isHovered ? "opacity-100" : "opacity-0"}`}
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(212,175,106,0.08), transparent)",
+          }}
+        />
+        <div
+          className={`absolute inset-px border transition-all duration-500 ${isHovered ? "opacity-60" : "opacity-0"}`}
+          style={{ borderColor: "#d4af6a" }}
+        />
         <div className="relative z-10">
-          <h3 className="text-2xl font-light mb-4" style={{ color: "#f5f5f5" }}>
+          <h3
+            className="text-lg md:text-2xl font-light mb-2 md:mb-4"
+            style={{ color: "#f5f5f5" }}
+          >
             {name}
           </h3>
-          <p className="text-sm leading-relaxed font-light mb-10" style={{ color: "#a8a8a8" }}>
+          <p
+            className="text-xs md:text-sm leading-relaxed font-light mb-5 md:mb-8"
+            style={{ color: "#a8a8a8" }}
+          >
             {desc}
           </p>
-
-          <div className="pt-8 border-t border-opacity-20" style={{ borderColor: "#d4af6a" }}>
+          <div
+            className="pt-4 md:pt-6 border-t border-opacity-20"
+            style={{ borderColor: "#d4af6a" }}
+          >
             {specs.map((spec) => (
-              <div key={spec} className="flex items-start gap-4 py-3">
-                <div className="w-1 h-1 rounded-full flex-shrink-0 mt-2" style={{ background: "#d4af6a" }} />
-                <span className="text-xs font-light" style={{ color: "#a8a8a8" }}>
+              <div key={spec} className="flex items-start gap-3 py-1.5 md:py-2">
+                <div
+                  className="w-1 h-1 rounded-full flex-shrink-0 mt-2"
+                  style={{ background: "#d4af6a" }}
+                />
+                <span
+                  className="text-xs font-light"
+                  style={{ color: "#a8a8a8" }}
+                >
                   {spec}
                 </span>
               </div>
@@ -190,59 +246,81 @@ const TierCardMinimal = ({ name, desc, specs, index }) => {
   );
 };
 
-const ProcessStepMinimal = ({ number, title, body, index }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: index * 0.12 }}
-      className="relative"
-    >
-      <div className="flex gap-8">
-        <div className="flex-shrink-0">
-          <div className="text-xs uppercase tracking-widest font-light" style={{ color: "#d4af6a" }}>
-            {number}
-          </div>
-        </div>
-        <div>
-          <h3 className="text-2xl font-light mb-4" style={{ color: "#f5f5f5" }}>
-            {title}
-          </h3>
-          <p className="text-sm leading-relaxed font-light" style={{ color: "#a8a8a8" }}>
-            {body}
-          </p>
+const ProcessStepMinimal = ({ number, title, body, index }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 16 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.5, delay: index * 0.08 }}
+    className="relative"
+  >
+    <div className="flex gap-4 md:gap-8">
+      <div className="flex-shrink-0">
+        <div
+          className="text-xs uppercase tracking-widest font-light"
+          style={{ color: "#d4af6a" }}
+        >
+          {number}
         </div>
       </div>
-    </motion.div>
-  );
-};
+      <div>
+        <h3
+          className="text-lg md:text-2xl font-light mb-2 md:mb-4"
+          style={{ color: "#f5f5f5" }}
+        >
+          {title}
+        </h3>
+        <p
+          className="text-xs md:text-sm leading-relaxed font-light"
+          style={{ color: "#a8a8a8" }}
+        >
+          {body}
+        </p>
+      </div>
+    </div>
+  </motion.div>
+);
 
 const TestimonialMinimal = ({ quote, name, role, index }) => {
   const [isHovered, setIsHovered] = useState(false);
-
   return (
     <motion.div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: index * 0.12 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.08 }}
       className="relative group"
     >
-      <div className="relative p-10 overflow-hidden">
-        <div className={`absolute inset-0 transition-all duration-700 ${isHovered ? "opacity-100" : "opacity-0"}`} style={{ background: "linear-gradient(135deg, rgba(212,175,106,0.06), transparent)" }} />
-        <div className={`absolute inset-px border transition-all duration-700 ${isHovered ? "opacity-60" : "opacity-0"}`} style={{ borderColor: "#d4af6a" }} />
-        <div className={`absolute left-0 top-0 w-1 h-8 transition-all duration-700 ${isHovered ? "h-12" : ""}`} style={{ background: "#d4af6a" }} />
-
+      <div className="relative p-6 md:p-8 overflow-hidden">
+        <div
+          className={`absolute inset-0 transition-all duration-500 ${isHovered ? "opacity-100" : "opacity-0"}`}
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(212,175,106,0.06), transparent)",
+          }}
+        />
+        <div
+          className={`absolute inset-px border transition-all duration-500 ${isHovered ? "opacity-60" : "opacity-0"}`}
+          style={{ borderColor: "#d4af6a" }}
+        />
+        <div
+          className={`absolute left-0 top-0 w-1 h-6 transition-all duration-500 ${isHovered ? "h-10" : ""}`}
+          style={{ background: "#d4af6a" }}
+        />
         <div className="relative z-10">
-          <p className="text-sm leading-relaxed font-light mb-8" style={{ color: "#d4d4d4" }}>
+          <p
+            className="text-xs md:text-sm leading-relaxed font-light mb-5 md:mb-8"
+            style={{ color: "#d4d4d4" }}
+          >
             "{quote}"
           </p>
           <div>
             <p className="text-sm font-light" style={{ color: "#f5f5f5" }}>
               {name}
             </p>
-            <p className="text-xs font-light mt-2" style={{ color: "#808080" }}>
+            <p className="text-xs font-light mt-1" style={{ color: "#808080" }}>
               {role}
             </p>
           </div>
@@ -254,17 +332,26 @@ const TestimonialMinimal = ({ quote, name, role, index }) => {
 
 const FAQMinimal = ({ items }) => {
   const [openIndex, setOpenIndex] = useState(null);
-
   return (
     <div className="space-y-1">
       {items.map((item, i) => (
-        <div key={i} className="border border-opacity-20" style={{ borderColor: "#d4af6a" }}>
+        <div
+          key={i}
+          className="border border-opacity-20"
+          style={{ borderColor: "#d4af6a" }}
+        >
           <button
             onClick={() => setOpenIndex(openIndex === i ? null : i)}
-            className="w-full px-8 py-6 flex items-center justify-between hover:bg-opacity-5 transition-all duration-300 group"
-            style={{ background: openIndex === i ? "rgba(212,175,106,0.04)" : "transparent" }}
+            className="w-full px-5 md:px-8 py-4 md:py-6 flex items-center justify-between transition-all duration-300"
+            style={{
+              background:
+                openIndex === i ? "rgba(212,175,106,0.04)" : "transparent",
+            }}
           >
-            <span className="text-left text-sm font-light" style={{ color: "#f5f5f5" }}>
+            <span
+              className="text-left text-xs md:text-sm font-light pr-4"
+              style={{ color: "#f5f5f5" }}
+            >
               {item.q}
             </span>
             <motion.div
@@ -282,8 +369,14 @@ const FAQMinimal = ({ items }) => {
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className="px-8 py-6 border-t border-opacity-20" style={{ borderColor: "#d4af6a" }}>
-              <p className="text-sm leading-relaxed font-light" style={{ color: "#a8a8a8" }}>
+            <div
+              className="px-5 md:px-8 py-4 md:py-6 border-t border-opacity-20"
+              style={{ borderColor: "#d4af6a" }}
+            >
+              <p
+                className="text-xs md:text-sm leading-relaxed font-light"
+                style={{ color: "#a8a8a8" }}
+              >
                 {item.a}
               </p>
             </div>
@@ -302,13 +395,9 @@ export default function Home() {
   return (
     <>
       <motion.section
-        style={{
-          opacity: heroOpacity,
-          scale: heroScale,
-        }}
-        className="relative h-screen flex items-center justify-center overflow-hidden"
+        style={{ opacity: heroOpacity, scale: heroScale }}
+        className="relative h-[100svh] flex items-center justify-center overflow-hidden"
       >
-        {/* Mars background image with blur */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -316,28 +405,35 @@ export default function Home() {
             filter: "blur(6px)",
           }}
         />
-
         <RefinedGradient />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(26,26,26,0.6) 0%, rgba(26,26,26,0.75) 50%, rgba(26,26,26,0.85) 100%)",
+          }}
+        />
 
-        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(26,26,26,0.6) 0%, rgba(26,26,26,0.75) 50%, rgba(26,26,26,0.85) 100%)" }} />
-
-        <div className="relative z-10 text-center px-8 md:px-16 max-w-5xl mx-auto">
+        <div className="relative z-10 text-center px-5 md:px-16 max-w-5xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9 }}
-            className="mb-8"
+            transition={{ duration: 0.8 }}
+            className="mb-4 md:mb-8"
           >
-            <p className="text-xs uppercase tracking-widest font-light" style={{ color: "#d4af6a" }}>
+            <p
+              className="text-[10px] md:text-xs uppercase tracking-widest font-light"
+              style={{ color: "#d4af6a" }}
+            >
               Ochre Foundry • Mars Operations
             </p>
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.1 }}
-            className="text-6xl md:text-8xl lg:text-9xl font-light leading-[1.0] tracking-tight mb-10"
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light leading-[1.02] tracking-tight mb-5 md:mb-10"
             style={{ color: "#f5f5f5" }}
           >
             We print homes
@@ -347,26 +443,37 @@ export default function Home() {
             </span>
           </motion.h1>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-6 justify-center"
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-sm md:text-xl max-w-3xl mx-auto mb-8 md:mb-12 leading-relaxed font-light"
+            style={{ color: "#a8a8a8" }}
+          >
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center"
           >
             <Link
               to="/contact"
-              className="px-10 py-4 text-xs uppercase tracking-widest font-light transition-all duration-300 relative overflow-hidden group"
+              className="px-8 md:px-10 py-3.5 md:py-4 text-xs uppercase tracking-widest font-light transition-all duration-300 relative overflow-hidden group"
               style={{ color: "#1a1a1a", background: "#d4af6a" }}
             >
               <span className="relative z-10 flex items-center gap-3 justify-center">
                 Request a quote
-                <ArrowUpRight size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                <ArrowUpRight
+                  size={14}
+                  className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300"
+                />
               </span>
             </Link>
-
             <Link
               to="/services"
-              className="px-10 py-4 text-xs uppercase tracking-widest font-light transition-all duration-300 border"
+              className="px-8 md:px-10 py-3.5 md:py-4 text-xs uppercase tracking-widest font-light transition-all duration-300 border"
               style={{ color: "#d4af6a", borderColor: "#d4af6a" }}
             >
               Explore services
@@ -375,58 +482,78 @@ export default function Home() {
         </div>
       </motion.section>
 
-      <section className="relative py-32 md:py-40" style={{ background: "#1a1a1a" }}>
-        <div className="px-8 md:px-16 max-w-7xl mx-auto">
+      <ContinuousMarquee
+        items={[
+          "37 HABITATS",
+          "9 SOLS PRINT-TO-SEAL",
+          "0.6T EARTH MASS",
+          "REGOLITH-COMPOSITE",
+        ]}
+        speed={20}
+      />
+
+      <section
+        className="relative py-10 md:py-20"
+        style={{ background: "#1a1a1a" }}
+      >
+        <div className="px-5 md:px-16 max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="mb-20"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-8 md:mb-14"
           >
-            <p className="text-xs uppercase tracking-widest font-light mb-6" style={{ color: "#d4af6a" }}>
+            <p
+              className="text-[10px] md:text-xs uppercase tracking-widest font-light mb-3 md:mb-6"
+              style={{ color: "#d4af6a" }}
+            >
               By the numbers
             </p>
-            <h2 className="text-5xl md:text-6xl font-light" style={{ color: "#f5f5f5" }}>
+            <h2
+              className="text-3xl md:text-6xl font-light"
+              style={{ color: "#f5f5f5" }}
+            >
               Mars-scale engineering.
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-1 border border-opacity-20" style={{ borderColor: "#d4af6a" }}>
+          <div
+            className="grid grid-cols-2 md:grid-cols-4 gap-1 border border-opacity-20"
+            style={{ borderColor: "#d4af6a" }}
+          >
             <Counter_StatCard
               value={<Counter end={37} />}
-              label="Habitats delivered since 2071"
+              label="Habitats since 2071"
               index={0}
             />
             <Counter_StatCard
               value="2.4m"
-              label="Regolith shielding thickness"
+              label="Regolith shielding"
               index={1}
             />
             <Counter_StatCard
               value="9 sols"
-              label="Average print-to-seal time"
+              label="Print-to-seal time"
               index={2}
             />
             <Counter_StatCard
               value="0.6t"
-              label="Earth mass shipped per habitat"
+              label="Earth mass shipped"
               index={3}
             />
           </div>
         </div>
       </section>
 
-      <section className="relative overflow-hidden w-full" style={{ background: "#1a1a1a" }}>
-        {/* Cinematic Video Background */}
+      <section
+        className="relative overflow-hidden w-full"
+        style={{ background: "#1a1a1a" }}
+      >
         <div
           className="relative w-full"
-          style={{
-            minHeight: "800px",
-            height: "100vh",
-            maxHeight: "1200px",
-          }}
+          style={{ minHeight: "480px", height: "70svh", maxHeight: "900px" }}
         >
-          {/* Video element */}
           <video
             className="absolute inset-0 w-full h-full object-cover"
             autoPlay
@@ -436,73 +563,79 @@ export default function Home() {
           >
             <source src="/videos/solar-system.mp4" type="video/mp4" />
           </video>
-
-          {/* fade overlay */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "linear-gradient(135deg, rgba(26,26,26,0.15) 0%, rgba(26,26,26,0.08) 50%, rgba(26,26,26,0.15) 100%)",
+              background:
+                "linear-gradient(135deg, rgba(26,26,26,0.15) 0%, rgba(26,26,26,0.08) 50%, rgba(26,26,26,0.15) 100%)",
             }}
           />
-
-          {/*depth - matches video */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "radial-gradient(ellipse at center, rgba(26,26,26,0) 35%, rgba(26,26,26,0.08) 70%, rgba(26,26,26,0.2) 100%)",
+              background:
+                "radial-gradient(ellipse at center, rgba(26,26,26,0) 35%, rgba(26,26,26,0.08) 70%, rgba(26,26,26,0.2) 100%)",
             }}
           />
-
-          {/* Top fade */}
           <div
             className="absolute top-0 left-0 right-0 pointer-events-none z-20"
             style={{
-              height: "280px",
-              background: "linear-gradient(180deg, rgba(26,26,26,0.9) 0%, rgba(26,26,26,0.5) 40%, rgba(26,26,26,0.15) 80%, rgba(26,26,26,0) 100%)",
+              height: "160px",
+              background:
+                "linear-gradient(180deg, rgba(26,26,26,0.9) 0%, rgba(26,26,26,0.5) 40%, rgba(26,26,26,0.15) 80%, rgba(26,26,26,0) 100%)",
             }}
           />
-
-          {/* Bottom fade */}
           <div
             className="absolute bottom-0 left-0 right-0 pointer-events-none z-20"
             style={{
-              height: "400px",
-              background: "linear-gradient(180deg, rgba(26,26,26,0) 0%, rgba(26,26,26,0.2) 30%, rgba(26,26,26,0.5) 60%, rgba(26,26,26,0.95) 100%)",
+              height: "220px",
+              background:
+                "linear-gradient(180deg, rgba(26,26,26,0) 0%, rgba(26,26,26,0.2) 30%, rgba(26,26,26,0.5) 60%, rgba(26,26,26,0.95) 100%)",
             }}
           />
 
-          {/* Problem Content OVERLAID on video */}
-          <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none px-8 md:px-16">
+          <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none px-5 md:px-16">
             <div className="w-full max-w-7xl mx-auto">
-              <div className="grid md:grid-cols-2 gap-20 items-center">
+              <div className="grid md:grid-cols-2 gap-8 md:gap-20 items-center">
                 <motion.div
-                  initial={{ opacity: 0, x: -50 }}
+                  initial={{ opacity: 0, x: -30 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.9 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
                   className="pointer-events-auto"
                 >
-                  <p className="text-xs uppercase tracking-widest font-light mb-8" style={{ color: "#d4af6a" }}>
+                  <p
+                    className="text-[10px] md:text-xs uppercase tracking-widest font-light mb-4 md:mb-8"
+                    style={{ color: "#d4af6a" }}
+                  >
                     The challenge
                   </p>
-                  <h2 className="text-5xl md:text-6xl font-light leading-tight" style={{ color: "#f5f5f5" }}>
+                  <h2
+                    className="text-2xl md:text-6xl font-light leading-tight"
+                    style={{ color: "#f5f5f5" }}
+                  >
                     Every kilogram shipped is a kilogram you didn't need to.
                   </h2>
                 </motion.div>
-
                 <motion.div
-                  initial={{ opacity: 0, x: 50 }}
+                  initial={{ opacity: 0, x: 30 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.9, delay: 0.1 }}
-                  className="space-y-6 text-sm leading-relaxed font-light pointer-events-auto"
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.1 }}
+                  className="space-y-3 md:space-y-6 text-xs md:text-sm leading-relaxed font-light pointer-events-auto"
                   style={{ color: "#d4d4d4" }}
                 >
                   <p>
-                    Prefab shells are launched heavy, land expensive, and still need months of on-site assembly. The regolith under every landing site is a structural material that's already there—already radiation-dense, and free of launch cost.
+                    Prefab shells are launched heavy, land expensive, and still
+                    need months of on-site assembly. The regolith under every
+                    landing site is a structural material that's already there.
                   </p>
                   <p>
-                    We built a mobile sintering gantry that transforms that regolith into a pressurized shell without a single Earth-side panel. Sealed structure in the time it used to take to unload one.
+                    We built a mobile sintering gantry that transforms that
+                    regolith into a pressurized shell without a single
+                    Earth-side panel.
                   </p>
-                  <div className="pt-6">
+                  <div className="pt-3 md:pt-6">
                     <Link
                       to="/about"
                       className="inline-flex items-center gap-3 text-xs uppercase tracking-widest font-light group transition-all duration-300"
@@ -519,36 +652,36 @@ export default function Home() {
               </div>
             </div>
           </div>
-
-          {/* Elegant centered accent line */}
-          <div
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10"
-            style={{
-              width: "180px",
-              height: "1.5px",
-              background: "linear-gradient(90deg, rgba(212,175,106,0) 0%, rgba(212,175,106,0.3) 50%, rgba(212,175,106,0) 100%)",
-            }}
-          />
         </div>
       </section>
 
-      <section className="relative py-32 md:py-40" style={{ background: "#1a1a1a" }}>
-        <div className="px-8 md:px-16 max-w-7xl mx-auto">
+      <section
+        className="relative py-10 md:py-20"
+        style={{ background: "#1a1a1a" }}
+      >
+        <div className="px-5 md:px-16 max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="mb-20"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-8 md:mb-14"
           >
-            <p className="text-xs uppercase tracking-widest font-light mb-6" style={{ color: "#d4af6a" }}>
+            <p
+              className="text-[10px] md:text-xs uppercase tracking-widest font-light mb-3 md:mb-6"
+              style={{ color: "#d4af6a" }}
+            >
               Why Ochre Foundry
             </p>
-            <h2 className="text-5xl md:text-6xl font-light" style={{ color: "#f5f5f5" }}>
+            <h2
+              className="text-3xl md:text-6xl font-light"
+              style={{ color: "#f5f5f5" }}
+            >
               Built for the Martian frontier.
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6">
             <FeatureCardMinimal
               number="01"
               title="On-site printing"
@@ -571,18 +704,38 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative py-32 md:py-40 " style={{ background: "#1a1a1a" }}>
-        <div className="px-8 md:px-16 max-w-7xl mx-auto">
+      <ScrollMarquee
+        items={[
+          "ON-SITE PRINTING",
+          "RADIATION SHIELDING",
+          "LAUNCH MASS SAVINGS",
+          "REGOLITH SINTERING",
+        ]}
+        baseSpeed={3}
+      />
+
+      <section
+        className="relative py-10 md:py-20"
+        style={{ background: "#1a1a1a" }}
+      >
+        <div className="px-5 md:px-16 max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="mb-20"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-8 md:mb-14"
           >
-            <p className="text-xs uppercase tracking-widest font-light mb-6" style={{ color: "#d4af6a" }}>
+            <p
+              className="text-[10px] md:text-xs uppercase tracking-widest font-light mb-3 md:mb-6"
+              style={{ color: "#d4af6a" }}
+            >
               Our history
             </p>
-            <h2 className="text-5xl md:text-6xl font-light" style={{ color: "#f5f5f5" }}>
+            <h2
+              className="text-3xl md:text-6xl font-light"
+              style={{ color: "#f5f5f5" }}
+            >
               From concept to deployment.
             </h2>
           </motion.div>
@@ -616,26 +769,40 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative py-32 md:py-40 " style={{ background: "#1a1a1a" }}>
-        <div className="px-8 md:px-16 max-w-7xl mx-auto">
+      <section
+        className="relative py-10 md:py-20"
+        style={{ background: "#1a1a1a" }}
+      >
+        <div className="px-5 md:px-16 max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="mb-20"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-8 md:mb-14"
           >
-            <p className="text-xs uppercase tracking-widest font-light mb-6" style={{ color: "#d4af6a" }}>
+            <p
+              className="text-[10px] md:text-xs uppercase tracking-widest font-light mb-3 md:mb-6"
+              style={{ color: "#d4af6a" }}
+            >
               Our offerings
             </p>
-            <h2 className="text-5xl md:text-6xl font-light mb-6" style={{ color: "#f5f5f5" }}>
+            <h2
+              className="text-3xl md:text-6xl font-light mb-3 md:mb-6"
+              style={{ color: "#f5f5f5" }}
+            >
               Three tiers. One printer.
             </h2>
-            <p className="text-sm font-light max-w-3xl" style={{ color: "#a8a8a8" }}>
-              Every habitat starts as the same sintering process—the difference is scale, life-support depth, and how many pods link together.
+            <p
+              className="text-xs md:text-sm font-light max-w-3xl"
+              style={{ color: "#a8a8a8" }}
+            >
+              Every habitat starts as the same sintering process—the difference
+              is scale, life-support depth, and how many pods link together.
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6 mb-8 md:mb-16">
             <TierCardMinimal
               name="Outpost Pod"
               desc="Single pressurized shell for research crews of 2–4, printed and sealed in under two weeks."
@@ -659,38 +826,49 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
             className="text-center"
           >
             <Link
               to="/services"
-              className="inline-flex items-center gap-3 px-10 py-4 text-xs uppercase tracking-widest font-light transition-all duration-300 border"
+              className="inline-flex items-center gap-3 px-8 md:px-10 py-3.5 md:py-4 text-xs uppercase tracking-widest font-light transition-all duration-300 border"
               style={{ color: "#d4af6a", borderColor: "#d4af6a" }}
             >
               Compare all tiers
-              <ArrowUpRight size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+              <ArrowUpRight size={14} />
             </Link>
           </motion.div>
         </div>
       </section>
 
-      <section className="relative py-32 md:py-40 " style={{ background: "#1a1a1a" }}>
-        <div className="px-8 md:px-16 max-w-7xl mx-auto">
+      <section
+        className="relative py-10 md:py-20"
+        style={{ background: "#1a1a1a" }}
+      >
+        <div className="px-5 md:px-16 max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="mb-20"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-8 md:mb-14"
           >
-            <p className="text-xs uppercase tracking-widest font-light mb-6" style={{ color: "#d4af6a" }}>
+            <p
+              className="text-[10px] md:text-xs uppercase tracking-widest font-light mb-3 md:mb-6"
+              style={{ color: "#d4af6a" }}
+            >
               The process
             </p>
-            <h2 className="text-5xl md:text-6xl font-light" style={{ color: "#f5f5f5" }}>
+            <h2
+              className="text-3xl md:text-6xl font-light"
+              style={{ color: "#f5f5f5" }}
+            >
               From bare regolith to sealed door.
             </h2>
           </motion.div>
 
-          <div className="space-y-16">
+          <div className="space-y-8 md:space-y-16">
             <ProcessStepMinimal
               number="01"
               title="Site survey"
@@ -713,23 +891,44 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative py-32 md:py-40 " style={{ background: "#1a1a1a" }}>
-        <div className="px-8 md:px-16 max-w-7xl mx-auto">
+      <ContinuousMarquee
+        items={[
+          "SITE SURVEY",
+          "ADDITIVE PRINT",
+          "SEAL & PRESSURIZE",
+          "72HR HOLD",
+        ]}
+        speed={24}
+        reverse
+      />
+
+      <section
+        className="relative py-10 md:py-20"
+        style={{ background: "#1a1a1a" }}
+      >
+        <div className="px-5 md:px-16 max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="mb-20"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-8 md:mb-14"
           >
-            <p className="text-xs uppercase tracking-widest font-light mb-6" style={{ color: "#d4af6a" }}>
+            <p
+              className="text-[10px] md:text-xs uppercase tracking-widest font-light mb-3 md:mb-6"
+              style={{ color: "#d4af6a" }}
+            >
               Voices from the field
             </p>
-            <h2 className="text-5xl md:text-6xl font-light" style={{ color: "#f5f5f5" }}>
+            <h2
+              className="text-3xl md:text-6xl font-light"
+              style={{ color: "#f5f5f5" }}
+            >
               What our crews say.
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6">
             <TestimonialMinimal
               quote="Ground broke nine days after the gantry landed. We moved our whole lichen program in under a lunar month."
               name="Dr. Priya Renn"
@@ -737,14 +936,14 @@ export default function Home() {
               index={0}
             />
             <TestimonialMinimal
-              quote="We budgeted for an Earth-shipped shell and got a printed one for a third of the launch mass. That's the real number that matters."
-              name="Tomas Ilves"
+              quote="We budgeted for an Earth-shipped shell and got a printed one for a third of the launch mass."
+              name="Dr. Ram"
               role="Logistics Director, Meridian Mining Co."
               index={1}
             />
             <TestimonialMinimal
-              quote="The radiation readings inside our block are lower than our old shipped habitat. The regolith shell just works better."
-              name="Anaya Fitch"
+              quote="The radiation readings inside our block are lower than our old shipped habitat."
+              name="Vishal"
               role="Settlement Coordinator, Arcadia Planitia"
               index={2}
             />
@@ -752,18 +951,30 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative py-32 md:py-40 " style={{ background: "#1a1a1a" }}>
-        <div className="px-8 md:px-16 max-w-3xl mx-auto">
+      <Mars3DSection />
+
+      <section
+        className="relative py-10 md:py-20"
+        style={{ background: "#1a1a1a" }}
+      >
+        <div className="px-5 md:px-16 max-w-3xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="mb-20"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-8 md:mb-14"
           >
-            <p className="text-xs uppercase tracking-widest font-light mb-6" style={{ color: "#d4af6a" }}>
+            <p
+              className="text-[10px] md:text-xs uppercase tracking-widest font-light mb-3 md:mb-6"
+              style={{ color: "#d4af6a" }}
+            >
               Questions
             </p>
-            <h2 className="text-5xl md:text-6xl font-light" style={{ color: "#f5f5f5" }}>
+            <h2
+              className="text-3xl md:text-6xl font-light"
+              style={{ color: "#f5f5f5" }}
+            >
               Before you send coordinates.
             </h2>
           </motion.div>
@@ -787,27 +998,36 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative py-32 md:py-40 " style={{ background: "#1a1a1a" }}>
-        <div className="px-8 md:px-16 max-w-7xl mx-auto text-center">
+      <section
+        className="relative py-10 md:py-20"
+        style={{ background: "#1a1a1a" }}
+      >
+        <div className="px-5 md:px-16 max-w-7xl mx-auto text-center">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
           >
-            <h2 className="text-5xl md:text-6xl font-light mb-8" style={{ color: "#f5f5f5" }}>
+            <h2
+              className="text-3xl md:text-6xl font-light mb-4 md:mb-8"
+              style={{ color: "#f5f5f5" }}
+            >
               Ready to build on Mars?
             </h2>
-            <p className="text-sm font-light max-w-2xl mx-auto mb-12" style={{ color: "#a8a8a8" }}>
+            <p
+              className="text-xs md:text-sm font-light max-w-2xl mx-auto mb-6 md:mb-12"
+              style={{ color: "#a8a8a8" }}
+            >
               Send us your coordinates and project scope. We'll handle the rest.
             </p>
-
             <Link
               to="/contact"
-              className="inline-flex items-center gap-3 px-12 py-4 text-xs uppercase tracking-widest font-light transition-all duration-300"
+              className="inline-flex items-center gap-3 px-10 md:px-12 py-3.5 md:py-4 text-xs uppercase tracking-widest font-light transition-all duration-300"
               style={{ color: "#1a1a1a", background: "#d4af6a" }}
             >
               Request a consultation
-              <ArrowUpRight size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+              <ArrowUpRight size={14} />
             </Link>
           </motion.div>
         </div>
